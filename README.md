@@ -23,6 +23,22 @@
         - abbreviations
      - add level based abbreviation for object notation
 
+### Abstract Object Notation
+
+```yaml
+{
+  null: null,
+  bool: true,
+  bool2: false,
+  int: 42,
+  float: 1.0,
+  str: "Hello, world",
+  array: [1, 2, 3, 4],
+  object: { key: "value" },
+  binary: <89 50 4e 47 0d 0a 1a 0a...>,
+}
+```
+
 ### Abbreviation for objects
 
 ```
