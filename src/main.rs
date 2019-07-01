@@ -10,7 +10,7 @@ use cursive::align::*;
 
 #[derive(PartialEq)]
 enum Direction {
-    Ingoing,
+    Incoming,
     Outgoing,
 }
 
@@ -26,7 +26,7 @@ fn main() {
     let items = vec![
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
@@ -36,177 +36,177 @@ fn main() {
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
         Row {
             timestamp: "12:31:21.534",
-            direction: Direction::Ingoing,
+            direction: Direction::Incoming,
             content: "{\"data\": \"Incoming json message\", \"type\": \"String\" }",
         },
     ];
@@ -222,7 +222,7 @@ fn main() {
     let mut list = SelectView::<usize>::new();
     let rows = items.iter().enumerate().map(|(idx, item)| {
         let timestamp = StyledString::styled(item.timestamp, Color::Light(BaseColor::Black));
-        let direction = if item.direction == Direction::Ingoing {
+        let direction = if item.direction == Direction::Incoming {
             StyledString::styled(">", Color::Dark(BaseColor::Blue))
         } else {
             StyledString::styled("<", Color::Dark(BaseColor::Magenta))
