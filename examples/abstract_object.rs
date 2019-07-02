@@ -85,7 +85,7 @@ fn main() {
         }
     }
 
-    siv.add_fullscreen_layer(TextView::new(val.indent(&theme)));
+    siv.add_fullscreen_layer(TextView::new(val.abbreviate(80, &theme)));
 
     siv.run();
 }

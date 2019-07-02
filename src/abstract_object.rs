@@ -130,6 +130,89 @@ impl Value {
         Value::Binary(Formatting::default(), val)
     }
 
+    pub fn abbreviate(&self, available: usize, theme: &Theme) -> StyledString {
+        self.abbreviate_inner(available, theme).1
+    }
+
+    fn abbreviate_inner(&self, available: usize, theme: &Theme) -> (bool, StyledString) {
+        eprintln!("{}", available);
+        match self {
+            Value::Null(f) |
+            Value::Bool(f, _) |
+            Value::Number(f, _) |
+            Value::String(f, _) |
+            Value::Binary(f, _) => {
+                let mut styled = f.prefix.clone();
+                styled.append(f.content.clone());
+                styled.append(f.postfix.clone());
+
+                if available < styled.width() {
+                    (true, StyledString::styled("…", theme.abbreviation))
+                } else {
+                    (false, styled)
+                }
+            },
+            Value::Array(f, a) => {
+                let mut styled = f.prefix.clone();
+
+                styled.append_plain(" ");
+                let mut width = styled.width() + f.postfix.width() + 2;
+
+                if available < width + 2 {
+                    (true, StyledString::styled("…", theme.abbreviation))
+                } else {
+                    for value in a.iter() {
+                        // extra +1 because of the whitespace after this value
+                        let (abbr, fmt) = value.abbreviate_inner(
+                            available.checked_sub(width + 1).unwrap_or(0),
+                            theme,
+                        );
+                        styled.append(fmt);
+                        styled.append_plain(" ");
+
+                        if abbr {
+                            break;
+                        }
+
+                        width = styled.width() + f.postfix.width();
+                    }
+                    styled.append(f.postfix.clone());
+
+                    (false, styled)
+                }
+            },
+            Value::Object(f, map) => {
+                let mut styled = f.prefix.clone();
+
+                styled.append_plain(" ");
+                let mut width = styled.width() + f.postfix.width() + 2;
+
+                if available < width {
+                    (true, StyledString::styled("…", theme.abbreviation))
+                } else {
+                    for value in map.values() {
+                        // extra +1 because of the whitespace after this value
+                        let (abbr, fmt) = value.abbreviate_inner(
+                            available.checked_sub(width + 1).unwrap_or(0),
+                            theme,
+                        );
+                        styled.append(fmt);
+                        styled.append_plain(" ");
+
+                        if abbr {
+                            break;
+                        }
+
+                        width = styled.width() + f.postfix.width();
+                    }
+                    styled.append(f.postfix.clone());
+
+                    (false, styled)
+                }
+            },
+        }
+    }
+
     pub fn indent(&self, theme: &Theme) -> StyledString {
         self.indent_inner(theme, 0)
     }
