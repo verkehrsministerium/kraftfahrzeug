@@ -1,4 +1,4 @@
-use cursive::theme::{Color, BaseColor, PaletteColor, Theme, ColorType, ColorStyle};
+use cursive::theme::{Color, BaseColor, PaletteColor, ColorType, ColorStyle};
 use cursive::views::*;
 use cursive::direction::Orientation;
 use cursive::view::*;
@@ -7,6 +7,10 @@ use cursive::utils::markup::StyledString;
 use cursive::event::EventTrigger;
 use cursive::traits::View;
 use cursive::align::*;
+
+mod abstract_object;
+
+use kraftfahrzeug::custom_theme_from_cursive;
 
 #[derive(PartialEq)]
 enum Direction {
@@ -351,22 +355,4 @@ fn highlight_list_item<T: 'static>(list: &mut SelectView<T>) {
             new_span
         }).collect());
     }
-}
-
-fn custom_theme_from_cursive(siv: &Cursive) -> Theme {
-    // We'll return the current theme with a small modification.
-    let mut theme = siv.current_theme().clone();
-
-    theme.palette[PaletteColor::Background] = Color::TerminalDefault;
-    theme.palette[PaletteColor::Shadow] = Color::TerminalDefault;
-    theme.palette[PaletteColor::View] = Color::TerminalDefault;
-    theme.palette[PaletteColor::Primary] = Color::TerminalDefault;
-    theme.palette[PaletteColor::Secondary] = Color::Dark(BaseColor::Black);
-    theme.palette[PaletteColor::Tertiary] = Color::TerminalDefault;
-    theme.palette[PaletteColor::TitlePrimary] = Color::TerminalDefault;
-    theme.palette[PaletteColor::TitleSecondary] = Color::TerminalDefault;
-    theme.palette[PaletteColor::Highlight] = Color::Light(BaseColor::White);
-    theme.palette[PaletteColor::HighlightInactive] = Color::TerminalDefault;
-
-    theme
 }
