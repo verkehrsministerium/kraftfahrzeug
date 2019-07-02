@@ -85,7 +85,11 @@ fn main() {
         }
     }
 
-    siv.add_fullscreen_layer(TextView::new(val.abbreviate(80, &theme)));
+    let mut styled = val.indent(&theme);
+    styled.append_plain("\n");
+    styled.append(val.abbreviate(80, &theme));
+
+    siv.add_fullscreen_layer(TextView::new(styled));
 
     siv.run();
 }
