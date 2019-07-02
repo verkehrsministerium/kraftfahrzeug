@@ -48,7 +48,7 @@ fn main() {
     }
 ";
 
-    let val: Value = serde_json::from_str::<serde_json::Value>(data).unwrap().into();
+    let mut val: Value = serde_json::from_str::<serde_json::Value>(data).unwrap().into();
 
     let mut siv = Cursive::default();
     let theme = kraftfahrzeug::custom_theme_from_cursive(&siv);
@@ -67,9 +67,25 @@ fn main() {
         separator: Color::TerminalDefault.into(),
         abbreviation: Color::Light(BaseColor::Red).into(),
     };
-    let themed = ThemedValue::new(val, theme);
+    val.style(&theme);
 
-    siv.add_fullscreen_layer(TextView::new(themed.style()));
+    if let Value::Object(_, ref mut map) = val {
+        if let Some(Value::Array(_, ref mut arr)) = map.get_mut(&"Actors".to_owned()) {
+            if let Some(Value::Object(ref mut f, _)) = arr.get_mut(1) {
+                f.expanded = false;
+            }
+            if let Some(Value::Object(_, ref mut obj)) = arr.get_mut(0) {
+                if let Some(Value::Array(ref mut f, _)) = obj.get_mut(&"children".to_owned()) {
+                    f.expanded = true;
+                }
+                if let Some(Value::String(ref mut f, _)) = obj.get_mut(&"photo".to_owned()) {
+                    f.expanded = false;
+                }
+            }
+        }
+    }
+
+    siv.add_fullscreen_layer(TextView::new(val.indent(&theme)));
 
     siv.run();
 }
