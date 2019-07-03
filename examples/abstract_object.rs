@@ -1,8 +1,9 @@
 extern crate kraftfahrzeug;
 
 use cursive::Cursive;
-use cursive::views::TextView;
-use cursive::theme::{Color, BaseColor};
+use cursive::direction::Orientation;
+use cursive::views::{TextView, LinearLayout};
+use cursive::theme::{Color, BaseColor, Effect, PaletteColor};
 
 use serde_json;
 
@@ -63,33 +64,17 @@ fn main() {
         number: Color::Light(BaseColor::Blue).into(),
         string: Color::Light(BaseColor::Green).into(),
         brace: Color::Light(BaseColor::Yellow).into(),
-        name: Color::TerminalDefault.into(),
-        separator: Color::TerminalDefault.into(),
+        name: PaletteColor::Primary.into(),
+        separator: PaletteColor::Primary.into(),
         abbreviation: Color::Light(BaseColor::Red).into(),
+        tree_control: Effect::Bold.into(),
     };
     val.style(&theme);
 
-    if let Value::Object(_, ref mut map) = val {
-        if let Some(Value::Array(_, ref mut arr)) = map.get_mut(&"Actors".to_owned()) {
-            if let Some(Value::Object(ref mut f, _)) = arr.get_mut(1) {
-                f.expanded = false;
-            }
-            if let Some(Value::Object(_, ref mut obj)) = arr.get_mut(0) {
-                if let Some(Value::Array(ref mut f, _)) = obj.get_mut(&"children".to_owned()) {
-                    f.expanded = true;
-                }
-                if let Some(Value::String(ref mut f, _)) = obj.get_mut(&"photo".to_owned()) {
-                    f.expanded = false;
-                }
-            }
-        }
-    }
-
-    let mut styled = val.indent(&theme);
-    styled.append_plain("\n");
-    styled.append(val.abbreviate(80, &theme));
-
-    siv.add_fullscreen_layer(TextView::new(styled));
+    let mut layout = LinearLayout::new(Orientation::Vertical);
+    layout.add_child(TextView::new(val.abbreviate(80, &theme)));
+    layout.add_child(val.indent(theme));
+    siv.add_fullscreen_layer(layout);
 
     siv.run();
 }

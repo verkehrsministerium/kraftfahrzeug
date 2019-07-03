@@ -1,8 +1,14 @@
 use cursive::theme::Style;
 use cursive::utils::markup::StyledString;
+use cursive::views::{SelectView, OnEventView, IdView};
+use cursive::event::EventTrigger;
+use cursive::view::View;
 
 use std::collections::hash_map::HashMap;
 use std::fmt;
+use std::rc::Rc;
+
+use crate::highlight_list_item;
 
 pub enum Number {
     Int(i64),
@@ -30,8 +36,14 @@ pub enum Value {
     Object(Formatting, HashMap<String, Value>),
 }
 
+#[derive(Debug)]
+pub enum ExpansionState {
+    Expanded,
+    Collapsed,
+}
+
 pub struct Formatting {
-    pub expanded: bool,
+    pub expansion_state: Rc<Option<ExpansionState>>,
     prefix: StyledString,
     content: StyledString,
     postfix: StyledString,
@@ -40,7 +52,7 @@ pub struct Formatting {
 impl Default for Formatting {
     fn default() -> Self {
         Self {
-            expanded: true,
+            expansion_state: Rc::new(None),
             prefix: StyledString::default(),
             content: StyledString::default(),
             postfix: StyledString::default(),
@@ -87,6 +99,7 @@ pub struct Theme {
     pub name: Style,
     pub separator: Style,
     pub abbreviation: Style,
+    pub tree_control: Style,
 }
 
 pub fn repeat_str(s: &str, n: usize) -> String {
@@ -135,7 +148,6 @@ impl Value {
     }
 
     fn abbreviate_inner(&self, available: usize, theme: &Theme) -> (bool, StyledString) {
-        eprintln!("{}", available);
         match self {
             Value::Null(f) |
             Value::Bool(f, _) |
@@ -213,11 +225,45 @@ impl Value {
         }
     }
 
-    pub fn indent(&self, theme: &Theme) -> StyledString {
-        self.indent_inner(theme, 0)
+    pub fn indent(self, theme: Theme) -> IdView<OnEventView<SelectView<Rc<Option<ExpansionState>>>>> {
+        let mut list = SelectView::new();
+        list.add_all(self.indent_inner(&theme, 0));
+        highlight_list_item(&mut list);
+        list.set_on_submit(move |siv, expansion_state_ref| {
+            // oh no, he's hacking again...
+            let expansion_state = unsafe { make_mut(expansion_state_ref) };
+            if let Some(ref state_ref) = *expansion_state {
+                eprintln!("alalalalalala");
+                let state = unsafe { make_mut(state_ref) };
+                match state {
+                    ExpansionState::Collapsed => *state = ExpansionState::Expanded,
+                    ExpansionState::Expanded => *state = ExpansionState::Collapsed,
+                }
+            }
+
+            if let Some(ref mut list) = siv.find_id::<OnEventView<SelectView<Rc<Option<ExpansionState>>>>>("💩") {
+                let selected = list.get_inner().selected_id();
+                list.get_inner_mut().clear();
+                list.get_inner_mut().add_all(self.indent_inner(&theme, 0));
+                if let Some(idx) = selected {
+                    list.get_inner_mut().set_selection(idx);
+                }
+                highlight_list_item(list.get_inner_mut());
+            }
+        });
+
+        IdView::new("💩", OnEventView::new(list)
+            .on_pre_event_inner(EventTrigger::any(), |list, event| {
+                let result = list.on_event(event.clone());
+                highlight_list_item(list);
+
+                Some(result)
+            }))
     }
 
-    fn indent_inner(&self, theme: &Theme, level: usize) -> StyledString {
+    fn indent_inner<'a>(&'a self, theme: &Theme, level: usize) ->
+        Vec<(StyledString, Rc<Option<ExpansionState>>)>
+    {
         let indent = StyledString::plain(repeat_str(" ", level * 2));
         match self {
             Value::Null(f) |
@@ -226,52 +272,75 @@ impl Value {
             Value::String(f, _) |
             Value::Binary(f, _) => {
                 let mut styled = indent;
+                styled.append_styled(" ", theme.tree_control);
+                styled.append_plain(" ");
                 styled.append(f.prefix.clone());
-
-                if f.expanded {
-                    styled.append(f.content.clone());
-                } else {
-                    styled.append_styled("…", theme.abbreviation);
-                }
+                styled.append(f.content.clone());
                 styled.append(f.postfix.clone());
 
-                styled
+                vec![(styled, f.expansion_state.clone())]
             },
             Value::Array(f, a) => {
-                let mut styled = indent.clone();
-                styled.append(f.prefix.clone());
+                let mut result = Vec::new();
 
-                if f.expanded {
-                    styled.append_plain("\n");
+                if let Some(ExpansionState::Expanded) = *f.expansion_state {
+                    let mut prefix = indent.clone();
+                    prefix.append_styled("-", theme.tree_control);
+                    prefix.append_plain(" ");
+                    prefix.append(f.prefix.clone());
+                    result.push((prefix, f.expansion_state.clone()));
+
                     for value in a.iter() {
-                        styled.append(value.indent_inner(theme, level + 1));
-                        styled.append_plain("\n");
+                        result.extend(value.indent_inner(theme, level + 1));
                     }
-                    styled.append(indent);
-                } else {
-                    styled.append_styled(" … ", theme.abbreviation);
-                }
-                styled.append(f.postfix.clone());
 
-                styled
+                    let mut postfix = indent.clone();
+                    postfix.append_styled(" ", theme.tree_control);
+                    postfix.append_plain(" ");
+                    postfix.append(f.postfix.clone());
+                    result.push((postfix, f.expansion_state.clone()));
+                } else {
+                    let mut abbr = indent.clone();
+                    abbr.append_styled("+", theme.tree_control);
+                    abbr.append_plain(" ");
+                    abbr.append(f.prefix.clone());
+                    abbr.append_styled(" … ", theme.abbreviation);
+                    abbr.append(f.postfix.clone());
+                    result.push((abbr, f.expansion_state.clone()));
+                }
+
+                result
             },
             Value::Object(f, map) => {
-                let mut styled = indent.clone();
-                styled.append(f.prefix.clone());
+                let mut result = Vec::new();
 
-                if f.expanded {
-                    styled.append_plain("\n");
+                if let Some(ExpansionState::Expanded) = *f.expansion_state {
+                    let mut prefix = indent.clone();
+                    prefix.append_styled("-", theme.tree_control);
+                    prefix.append_plain(" ");
+                    prefix.append(f.prefix.clone());
+                    result.push((prefix, f.expansion_state.clone()));
+
                     for value in map.values() {
-                        styled.append(value.indent_inner(theme, level + 1));
-                        styled.append_plain("\n");
+                        result.extend(value.indent_inner(theme, level + 1));
                     }
-                    styled.append(indent);
-                } else {
-                    styled.append_styled(" … ", theme.abbreviation);
-                }
-                styled.append(f.postfix.clone());
 
-                styled
+                    let mut postfix = indent.clone();
+                    postfix.append_styled(" ", theme.tree_control);
+                    postfix.append_plain(" ");
+                    postfix.append(f.postfix.clone());
+                    result.push((postfix, f.expansion_state.clone()));
+                } else {
+                    let mut abbr = indent.clone();
+                    abbr.append_styled("+", theme.tree_control);
+                    abbr.append_plain(" ");
+                    abbr.append(f.prefix.clone());
+                    abbr.append_styled(" … ", theme.abbreviation);
+                    abbr.append(f.postfix.clone());
+                    result.push((abbr, f.expansion_state.clone()));
+                }
+
+                result
             },
         }
     }
@@ -283,26 +352,31 @@ impl Value {
     fn style_inner(&mut self, theme: &Theme, prefix: StyledString, postfix: StyledString) {
         match self {
             Value::Null(f) => {
+                *Rc::get_mut(&mut f.expansion_state).unwrap() = None;
                 f.prefix = prefix;
                 f.content = StyledString::styled("null", theme.null);
                 f.postfix = postfix;
             },
             Value::Bool(f, b) => {
+                *Rc::get_mut(&mut f.expansion_state).unwrap() = None;
                 f.prefix = prefix;
                 f.content = StyledString::styled(format!("{}", b), theme.bool);
                 f.postfix = postfix;
             },
             Value::Number(f, n) => {
+                *Rc::get_mut(&mut f.expansion_state).unwrap() = None;
                 f.prefix = prefix;
                 f.content = StyledString::styled(format!("{}", n), theme.number);
                 f.postfix = postfix;
             },
             Value::String(f, s) => {
+                *Rc::get_mut(&mut f.expansion_state).unwrap() = None;
                 f.prefix = prefix;
                 f.content = StyledString::styled(format!("\"{}\"", s), theme.string);
                 f.postfix = postfix;
             },
             Value::Array(f, a) => {
+                *Rc::get_mut(&mut f.expansion_state).unwrap() = Some(ExpansionState::Expanded);
                 f.prefix = prefix;
                 f.prefix.append_styled("[", theme.brace);
 
@@ -327,6 +401,7 @@ impl Value {
                 f.postfix.append(postfix);
             },
             Value::Binary(f, b) => {
+                *Rc::get_mut(&mut f.expansion_state).unwrap() = Some(ExpansionState::Collapsed);
                 f.prefix = prefix;
                 f.prefix.append_styled("<", theme.brace);
 
@@ -343,6 +418,7 @@ impl Value {
                 f.postfix.append(postfix);
             },
             Value::Object(f, map) => {
+                *Rc::get_mut(&mut f.expansion_state).unwrap() = Some(ExpansionState::Expanded);
                 f.prefix = prefix;
                 f.prefix.append_styled("{", theme.brace);
 
@@ -371,4 +447,11 @@ impl Value {
             },
         }
     }
+}
+
+// I'm hiding down here, nobody will see me 😈
+unsafe fn make_mut<T>(reference: &T) -> &mut T {
+    let const_ptr = reference as *const T;
+    let mut_ptr = const_ptr as *mut T;
+    &mut *mut_ptr
 }

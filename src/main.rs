@@ -11,6 +11,7 @@ use cursive::align::*;
 mod abstract_object;
 
 use kraftfahrzeug::custom_theme_from_cursive;
+use kraftfahrzeug::highlight_list_item;
 
 #[derive(PartialEq)]
 enum Direction {
@@ -321,38 +322,4 @@ fn toolbar_button(key: &str, label: &str) -> OnEventView<TextView> {
         back: ColorType::Color(Color::Dark(BaseColor::Blue)),
     });
     OnEventView::new(TextView::new(styled))
-}
-
-fn highlight_list_item<T: 'static>(list: &mut SelectView<T>) {
-    let selection = list.selected_id();
-    for i in 0..list.len() {
-        let item: &mut StyledString = list.get_item_mut(i).unwrap().0;
-        *item = StyledString::with_spans(item.source(), item.spans_raw().iter().map(|span| {
-            let mut new_span = span.clone();
-            let (front, back) = match selection {
-                Some(idx) if idx == i => (
-                    ColorType::Palette(PaletteColor::Secondary),
-                    ColorType::Palette(PaletteColor::Highlight),
-                ),
-                _ => (
-                    ColorType::Palette(PaletteColor::Primary),
-                    ColorType::Palette(PaletteColor::View),
-                ),
-            };
-
-            if let Some(ref mut color_style) = new_span.attr.color {
-                log::info!("Changed bg color {:?}", span.attr.color);
-                match color_style.front {
-                    ColorType::Palette(PaletteColor::Secondary)
-                        | ColorType::Palette(PaletteColor::Primary) => color_style.front = front,
-                    _ => {},
-                };
-                color_style.back = back;
-            } else {
-                new_span.attr.color = Some(ColorStyle { front, back });
-            }
-
-            new_span
-        }).collect());
-    }
 }
