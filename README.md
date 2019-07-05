@@ -1,8 +1,49 @@
-<h1 align="center">Welcome to kraftfahrzeug 👋</h1>
+<p align="center">
+  <img src="assets/kraftfahrzeug.svg" height="256"><br>
+  <small>
+    <code>car-crash</code> icon by
+    <a href="https://fontawesome.com/" title="FontAwesome">FontAwesome</a>,
+    used under
+    <a href="https://creativecommons.org/licenses/by/4.0/"
+       title="Creative Commons BY 4.0"
+       target="_blank">CC BY 4.0</a> / colors changed from original
+  </small>
+</p>
+<h1 align="center">Welcome to Kraftfahrzeug 👋</h1>
+<p align="center">
+  <a href="https://travis-ci.org/verkehrsministerium/kraftfahrzeug">
+    <img src="https://travis-ci.org/verkehrsministerium/kraftfahrzeug.svg?branch=master">
+  </a>
+  <a href="https://github.com/verkehrsministerium/kraftfahrzeug/blob/master/LICENSE">
+    <img alt="GitHub" src="https://img.shields.io/github/license/verkehrsministerium/kraftfahrzeug.svg">
+  </a>
+  <a href="http://makeapullrequest.com">
+    <img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" target="_blank" />
+  </a>
+  <br>
+  <i>A serialization agnostic repl for websocket transports</i>
+</p>
 
-> A serialization agnostic repl for websocket transports
+---
 
-## Design notes
+> This project is work-in-progress
+
+## How to use
+
+> TBD
+
+## Installation
+
+> TBD
+
+## Troubleshooting
+
+> TBD
+
+## Development
+
+<details>
+<summary>Design notes</summary>
 
  1. Panes
      - manage panes for inspecting messages and sending a message
@@ -60,15 +101,32 @@ to
 
 > Abbrevations are only present on level `n`, abbreviating all messages deeper than `n` and may abbreviate other message at level `n`. An item on a lower level than `n` (e.g. the root) will never be abbreviated.
 
-## Author
+</details>
 
-👤 **Fin Christensen**
+## Authors
 
-* Github: [@fin-ger](https://github.com/fin-ger)
+**Fin Christensen**
+
+> [:octocat: `@fin-ger`](https://github.com/fin-ger)  
+> [:elephant: `@fin_ger@mastodon.social`](https://mastodon.social/web/accounts/787945)  
+> [:bird: `@fin_ger_github`](https://twitter.com/fin_ger_github)  
+
+<br>
+
+**Johannes Wünsche**
+
+> [:octocat: `@jwuensche`](https://github.com/jwuensche)  
+> [:elephant: `@fredowald@mastodon.social`](https://mastodon.social/web/accounts/843376)  
+> [:bird: `@Fredowald`](https://twitter.com/fredowald)  
+
+<br>
+
+**Benjamin Sparks**
+
+> [:octocat: `@bengsparks`](https://github.com/bengsparks)  
+> [:bird: `@bsparks100`](https://twitter.com/bsparks100)  
+
 
 ## Show your support
 
-Give a ⭐️ if this project helped you!
-
-***
-_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
+Give a :star: if this project helped you!
