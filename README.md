@@ -1,8 +1,8 @@
 <p align="center">
   <img src="assets/kraftfahrzeug.svg" height="256"><br>
   <small>
-    <a href="https://fontawesome.com/icons/car-crash?style=solid"><code>car-crash</code> icon</a> by
-    <a href="https://fontawesome.com/" title="FontAwesome">FontAwesome</a>,
+    <a href="https://fontawesome.com/icons/car-crash?style=solid" target="_blank"><code>car-crash</code> icon</a> by
+    <a href="https://fontawesome.com/" title="FontAwesome" target="_blank">FontAwesome</a>,
     used under
     <a href="https://creativecommons.org/licenses/by/4.0/"
        title="Creative Commons BY 4.0"
