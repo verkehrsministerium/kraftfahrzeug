@@ -1,4 +1,4 @@
-use cursive::theme::{Color, BaseColor, PaletteColor, ColorType, ColorStyle};
+use cursive::theme::{Color, BaseColor, ColorType, ColorStyle};
 use cursive::views::*;
 use cursive::direction::Orientation;
 use cursive::view::*;
