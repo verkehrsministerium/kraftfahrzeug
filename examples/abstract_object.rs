@@ -7,7 +7,22 @@ use cursive::theme::{Color, BaseColor, Effect, PaletteColor};
 
 use serde_json;
 
-use kraftfahrzeug::abstract_object::*;
+use kraftfahrzeug::message::{Theme, Value};
+use kraftfahrzeug::message::view::MessageView;
+
+lazy_static::lazy_static! {
+    static ref MESSAGE_THEME: Theme = Theme {
+        null: Color::Light(BaseColor::Magenta).into(),
+        bool: Color::Light(BaseColor::Cyan).into(),
+        number: Color::Light(BaseColor::Blue).into(),
+        string: Color::Light(BaseColor::Green).into(),
+        brace: Color::Light(BaseColor::Yellow).into(),
+        name: PaletteColor::Primary.into(),
+        separator: PaletteColor::Primary.into(),
+        abbreviation: Color::Light(BaseColor::Red).into(),
+        tree_control: Effect::Bold.into(),
+    };
+}
 
 fn main() {
     let data = "
@@ -49,31 +64,18 @@ fn main() {
     }
 ";
 
-    let mut val: Value = serde_json::from_str::<serde_json::Value>(data).unwrap().into();
-
     let mut siv = Cursive::default();
-    let theme = kraftfahrzeug::custom_theme_from_cursive(&siv);
+    let theme = kraftfahrzeug::utils::custom_theme_from_cursive(&siv);
     siv.set_theme(theme);
 
     // We can quit by pressing `q`
     siv.add_global_callback('q', Cursive::quit);
 
-    let theme = Theme {
-        null: Color::Light(BaseColor::Magenta).into(),
-        bool: Color::Light(BaseColor::Cyan).into(),
-        number: Color::Light(BaseColor::Blue).into(),
-        string: Color::Light(BaseColor::Green).into(),
-        brace: Color::Light(BaseColor::Yellow).into(),
-        name: PaletteColor::Primary.into(),
-        separator: PaletteColor::Primary.into(),
-        abbreviation: Color::Light(BaseColor::Red).into(),
-        tree_control: Effect::Bold.into(),
-    };
-    val.style(&theme);
+    let val = Value::new(&MESSAGE_THEME, serde_json::from_str::<serde_json::Value>(data).unwrap());
 
     let mut layout = LinearLayout::new(Orientation::Vertical);
-    layout.add_child(TextView::new(val.abbreviate(80, &theme)));
-    layout.add_child(val.indent(theme));
+    layout.add_child(TextView::new(val.abbreviate(80)));
+    layout.add_child(MessageView::new(val));
     siv.add_fullscreen_layer(layout);
 
     siv.run();

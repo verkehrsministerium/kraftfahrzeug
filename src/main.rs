@@ -8,7 +8,8 @@ use cursive::event::EventTrigger;
 use cursive::traits::View;
 use cursive::align::*;
 
-mod abstract_object;
+mod message;
+mod utils;
 
 use kraftfahrzeug::custom_theme_from_cursive;
 use kraftfahrzeug::highlight_list_item;
