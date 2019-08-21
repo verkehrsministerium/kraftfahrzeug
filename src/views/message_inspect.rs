@@ -1,14 +1,15 @@
-extern crate kraftfahrzeug;
+use std::rc::Rc;
 
-use cursive::Cursive;
 use cursive::direction::Orientation;
 use cursive::views::{TextView, LinearLayout};
 use cursive::theme::{Color, BaseColor, Effect, PaletteColor};
+use cursive::view::{View, ViewWrapper};
+use cursive::Vec2;
 
 use serde_json;
 
-use kraftfahrzeug::message::{Theme, Value};
-use kraftfahrzeug::message::view::MessageView;
+use crate::message::{Theme, Value};
+use crate::message::view::MessageView;
 
 lazy_static::lazy_static! {
     static ref MESSAGE_THEME: Theme = Theme {
@@ -24,7 +25,7 @@ lazy_static::lazy_static! {
     };
 }
 
-fn main() {
+pub fn message_inspect_mockup() -> impl View {
     let data = "
     {
       \"Actors\": [
@@ -64,19 +65,38 @@ fn main() {
     }
 ";
 
-    let mut siv = Cursive::default();
-    let theme = kraftfahrzeug::utils::custom_theme_from_cursive(&siv);
-    siv.set_theme(theme);
-
-    // We can quit by pressing `q`
-    siv.add_global_callback('q', Cursive::quit);
-
     let val = Value::new(&MESSAGE_THEME, serde_json::from_str::<serde_json::Value>(data).unwrap());
 
     let mut layout = LinearLayout::new(Orientation::Vertical);
-    layout.add_child(TextView::new(val.abbreviate(80)));
+    layout.add_child(MessageSingleLineView::new(val.clone()));
     layout.add_child(MessageView::new(val));
-    siv.add_fullscreen_layer(layout);
 
-    siv.run();
+    layout
+}
+
+pub struct MessageSingleLineView {
+    message: Rc<Value<'static>>,
+    view: TextView,
+}
+
+impl MessageSingleLineView {
+    pub fn new(val: Rc<Value<'static>>) -> Self {
+        Self {
+            message: val,
+            view: TextView::empty(),
+        }
+    }
+}
+
+impl ViewWrapper for MessageSingleLineView {
+    cursive::wrap_impl!(self.view: TextView);
+
+    fn wrap_required_size(&mut self, req: Vec2) -> Vec2 {
+        self.view.set_content(self.message.abbreviate(req.x));
+
+        Vec2 {
+            x: req.x,
+            y: 1,
+        }
+    }
 }

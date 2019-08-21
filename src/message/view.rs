@@ -30,6 +30,7 @@ impl MessageView {
         list.add_all(Self::indent(&message, 0));
         utils::highlight_list_item(&mut list);
         list.set_on_submit(move |siv: &mut Cursive, expansion_state: &Rc<Cell<ExpansionState>>| {
+            log::debug!("list row submit");
             match expansion_state.get() {
                 ExpansionState::Collapsed => expansion_state.set(ExpansionState::Expanded),
                 ExpansionState::Expanded => expansion_state.set(ExpansionState::Collapsed),
