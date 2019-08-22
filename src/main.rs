@@ -1,6 +1,7 @@
 use cursive::theme::{Color, BaseColor, ColorType, ColorStyle};
 use cursive::views::{LinearLayout, ScrollView};
 use cursive::direction::Orientation;
+use cursive::event::{Event, Key};
 use cursive::Cursive;
 use cursive_multiplex::Mux;
 
@@ -35,6 +36,11 @@ fn main() {
     siv.add_global_callback('q', Cursive::quit);
 
     let (mut mux, messages_id) = Mux::new(views::messages_mockup());
+    mux.set_move_focus_up(Event::Alt(Key::Up));
+    mux.set_move_focus_right(Event::Alt(Key::Right));
+    mux.set_move_focus_down(Event::Alt(Key::Down));
+    mux.set_move_focus_left(Event::Alt(Key::Left));
+
     let _message_inspect_id = mux.add_right_of(views::message_inspect_mockup(), messages_id)
         .expect("failed to add message-inspect");
     let _debug_id = mux.add_below(
