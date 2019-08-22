@@ -17,16 +17,12 @@ fn main() {
     let config_path = xdg_dirs.place_config_file("logspec.toml")
         .expect("cannot create configuration directory!");
     flexi_logger::Logger::with_env_or_str("info,kraftfahrzeug=debug")
-        .log_to_file()
+        .log_target(flexi_logger::LogTarget::FileAndWriter(
+            views::cursive_log_writer(flexi_logger::with_thread)
+        ))
         .directory("logs")
-        .rotate(
-            flexi_logger::Criterion::Size(1024 * 1024),
-            flexi_logger::Naming::Timestamps,
-            flexi_logger::Cleanup::KeepLogFiles(10),
-        )
-        .o_timestamp(true)
+        .suppress_timestamp()
         .format(flexi_logger::colored_with_thread)
-        .add_writer("cursive", views::cursive_log_writer(flexi_logger::colored_with_thread))
         .start_with_specfile(config_path)
         .expect("failed to initialize logger!");
 

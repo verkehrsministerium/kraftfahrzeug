@@ -24,8 +24,6 @@ impl DebugView {
 
 impl View for DebugView {
     fn draw(&self, printer: &Printer<'_, '_>) {
-        log::info!(target: "{cursive}", "drawing");
-
         logs_with(|logs| {
             // Only print the last logs, so skip what doesn't fit
             let skipped = logs.borrow().len().saturating_sub(printer.size.y);
