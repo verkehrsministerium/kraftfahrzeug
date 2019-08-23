@@ -30,9 +30,6 @@ fn main() {
     let theme = custom_theme_from_cursive(&siv);
     siv.set_theme(theme);
 
-    // We can quit by pressing `q`
-    siv.add_global_callback('q', Cursive::quit);
-
     let (mut mux, messages_id) = Mux::new(views::messages_mockup());
     mux.set_move_focus_up(Event::Alt(Key::Up));
     mux.set_move_focus_right(Event::Alt(Key::Right));
@@ -56,7 +53,7 @@ fn main() {
     let mut layout = LinearLayout::new(Orientation::Vertical);
     layout.add_child(views::titlebar_mockup(style.clone()));
     layout.add_child(mux);
-    layout.add_child(views::toolbar_mockup(style.clone()));
+    layout.add_child(views::toolbar_mockup(&mut siv, style.clone()));
 
     siv.add_fullscreen_layer(layout);
     siv.run();

@@ -69,7 +69,7 @@ impl LogWriter for CursiveLogWriter {
         });
 
         let mut line = StyledString::new();
-        line.append_styled(format!("{}", now.now().format("%T%.f")), color);
+        line.append_styled(format!("{}", now.now().format("%T%.3f")), color);
         line.append_plain(format!(
             " [{}] ",
             thread::current().name().unwrap_or("(unnamed)"),
