@@ -18,9 +18,7 @@ fn main() {
     let config_path = xdg_dirs.place_config_file("logspec.toml")
         .expect("cannot create configuration directory!");
     flexi_logger::Logger::with_env_or_str("info,kraftfahrzeug=debug")
-        .log_target(flexi_logger::LogTarget::FileAndWriter(
-            views::cursive_log_writer(flexi_logger::with_thread)
-        ))
+        .log_target(flexi_logger::LogTarget::FileAndWriter(views::cursive_log_writer()))
         .directory("logs")
         .suppress_timestamp()
         .format(flexi_logger::colored_with_thread)

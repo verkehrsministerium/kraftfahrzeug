@@ -1,15 +1,17 @@
-use cursive::{view::View, Vec2, Printer};
-use flexi_logger::{FormatFunction, DeferredNow, Record, writers::LogWriter};
+use cursive::{view::View, Vec2, Printer, theme::{Color, BaseColor}, utils::markup::StyledString};
+use flexi_logger::{DeferredNow, Record, Level, writers::LogWriter};
 use arraydeque::{ArrayDeque, Wrapping};
 use std::cell::RefCell;
+use std::thread;
+
+type LogBuffer = ArrayDeque<[StyledString; 2048], Wrapping>;
 
 pub(crate) fn logs_with<F, R>(f: F) -> R
 where
-    F: FnOnce(&RefCell<ArrayDeque<[String; 2048], Wrapping>>) -> R,
+    F: FnOnce(&RefCell<LogBuffer>) -> R,
 {
     thread_local! {
-        static LOGS: RefCell<ArrayDeque<[String; 2048], Wrapping>> =
-            RefCell::new(ArrayDeque::new());
+        static LOGS: RefCell<LogBuffer> = RefCell::new(LogBuffer::new());
     }
     LOGS.with(f)
 }
@@ -29,7 +31,7 @@ impl View for DebugView {
             let skipped = logs.borrow().len().saturating_sub(printer.size.y);
 
             for (i, msg) in logs.borrow().iter().skip(skipped).enumerate() {
-                printer.print((0, i), &msg);
+                printer.print_styled((0, i), msg.into());
             }
         });
     }
@@ -38,7 +40,7 @@ impl View for DebugView {
         logs_with(|logs| {
             // The longest line sets the width
             let w = logs.borrow().iter()
-                .map(|msg| msg.len())
+                .map(|msg| msg.width())
                 .max()
                 .unwrap_or(1);
             let h = logs.borrow().len();
@@ -50,22 +52,35 @@ impl View for DebugView {
     }
 }
 
-pub struct CursiveLogWriter {
-    format: FormatFunction,
-}
+pub struct CursiveLogWriter;
 
-pub fn cursive_log_writer(format: FormatFunction) -> Box<CursiveLogWriter> {
-    Box::new(CursiveLogWriter {
-        format,
-    })
+pub fn cursive_log_writer() -> Box<CursiveLogWriter> {
+    Box::new(CursiveLogWriter)
 }
 
 impl LogWriter for CursiveLogWriter {
     fn write(&self, now: &mut DeferredNow, record: &Record) -> std::io::Result<()> {
-        let mut line = Vec::new();
-        (self.format)(&mut line, now, record)?;
+        let color = Color::Dark(match record.level() {
+            Level::Trace => BaseColor::Green,
+            Level::Debug => BaseColor::Cyan,
+            Level::Info => BaseColor::Blue,
+            Level::Warn => BaseColor::Yellow,
+            Level::Error => BaseColor::Red,
+        });
 
-        let line = unsafe { String::from_utf8_unchecked(line) };
+        let mut line = StyledString::new();
+        line.append_styled(format!("{}", now.now().format("%T%.f")), color);
+        line.append_plain(format!(
+            " [{}] ",
+            thread::current().name().unwrap_or("(unnamed)"),
+        ));
+        line.append_styled(format!("{}", record.level()), color);
+        line.append_plain(format!(
+            " <{}:{}> ",
+            record.file().unwrap_or("(unnamed)"),
+            record.line().unwrap_or(0),
+        ));
+        line.append_styled(format!("{}", &record.args()), color);
 
         logs_with(|logs| {
             logs.borrow_mut().push_back(line);
