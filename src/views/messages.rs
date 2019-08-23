@@ -226,7 +226,6 @@ pub fn messages_mockup() -> impl View {
         (row, idx)
     });
     list.add_all(rows);
-    //list.set_selection(list.len())(&mut siv);
     highlight_list_item(&mut list);
 
     BoxView::new(

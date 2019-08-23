@@ -21,7 +21,7 @@ pub fn custom_theme_from_cursive(siv: &Cursive) -> Theme {
     theme.palette[PaletteColor::TitlePrimary] = Color::TerminalDefault;
     theme.palette[PaletteColor::TitleSecondary] = Color::TerminalDefault;
     theme.palette[PaletteColor::Highlight] = Color::Light(BaseColor::White);
-    theme.palette[PaletteColor::HighlightInactive] = Color::TerminalDefault;
+    theme.palette[PaletteColor::HighlightInactive] = Color::Dark(BaseColor::White);
 
     theme
 }

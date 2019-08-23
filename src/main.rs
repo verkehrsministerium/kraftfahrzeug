@@ -44,7 +44,8 @@ fn main() {
     let _debug_id = mux.add_below(
         ScrollView::new(DebugView::new())
             .scroll_x(true)
-            .scroll_y(true),
+            .scroll_y(true)
+            .show_scrollbars(true),
         messages_id,
     ).expect("failed to add debug-view");
 
