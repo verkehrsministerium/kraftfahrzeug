@@ -1,9 +1,9 @@
-use cursive::theme::{Color, BaseColor};
-use cursive::views::{SelectView, ScrollView, BoxView, OnEventView};
-use cursive::view::{SizeConstraint, ScrollStrategy};
-use cursive::utils::markup::StyledString;
 use cursive::event::EventTrigger;
+use cursive::theme::{BaseColor, Color};
+use cursive::utils::markup::StyledString;
 use cursive::view::View;
+use cursive::view::{ScrollStrategy, SizeConstraint};
+use cursive::views::{BoxView, OnEventView, ScrollView, SelectView};
 
 use crate::utils::highlight_list_item;
 
@@ -231,18 +231,16 @@ pub fn messages_mockup() -> impl View {
     BoxView::new(
         SizeConstraint::Full,
         SizeConstraint::Full,
-        ScrollView::new(
-            BoxView::new(
-                SizeConstraint::Full,
-                SizeConstraint::Free,
-                OnEventView::new(list)
-                    .on_pre_event_inner(EventTrigger::any(), |list, event| {
-                        let result = list.on_event(event.clone());
-                        highlight_list_item(list);
+        ScrollView::new(BoxView::new(
+            SizeConstraint::Full,
+            SizeConstraint::Free,
+            OnEventView::new(list).on_pre_event_inner(EventTrigger::any(), |list, event| {
+                let result = list.on_event(event.clone());
+                highlight_list_item(list);
 
-                        Some(result)
-                    }),
-            ),
-        ).scroll_strategy(ScrollStrategy::StickToBottom),
+                Some(result)
+            }),
+        ))
+        .scroll_strategy(ScrollStrategy::StickToBottom),
     )
 }

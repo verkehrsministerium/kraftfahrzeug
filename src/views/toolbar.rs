@@ -1,11 +1,11 @@
-use cursive::theme::{Color, BaseColor, ColorType, ColorStyle};
-use cursive::views::{Canvas, BoxView, TextView, OnEventView, LinearLayout, Button};
-use cursive::direction::{Direction, Orientation};
-use cursive::utils::markup::StyledString;
-use cursive::traits::View;
 use cursive::align::HAlign;
-use cursive::{Cursive, Printer, Vec2, Rect};
-use cursive::event::{Event, Callback, EventTrigger, EventResult, MouseEvent, MouseButton, Key};
+use cursive::direction::{Direction, Orientation};
+use cursive::event::{Callback, Event, EventResult, Key, MouseButton, MouseEvent};
+use cursive::theme::ColorStyle;
+use cursive::traits::View;
+use cursive::utils::markup::StyledString;
+use cursive::views::{BoxView, Canvas, LinearLayout, TextView};
+use cursive::{Cursive, Printer, Vec2};
 
 pub struct ToolbarButton {
     content: StyledString,
@@ -28,10 +28,13 @@ impl ToolbarButton {
         C: Fn(&mut Cursive) + 'static + Clone,
     {
         let mut content = StyledString::new();
-        content.append_styled(format!(" {} ", key.into()), ColorStyle {
-            front: style.back,
-            back: style.front,
-        });
+        content.append_styled(
+            format!(" {} ", key.into()),
+            ColorStyle {
+                front: style.back,
+                back: style.front,
+            },
+        );
         content.append_styled(format!("{} ", label.into()), *style);
         siv.add_global_callback(event, callback.clone());
 
@@ -53,9 +56,7 @@ impl View for ToolbarButton {
                 event: MouseEvent::Release(MouseButton::Left),
                 position,
                 offset,
-            } if position
-                .fits_in_rect(offset, (self.content.width(), 1)) =>
-            {
+            } if position.fits_in_rect(offset, (self.content.width(), 1)) => {
                 EventResult::Consumed(Some(self.callback.clone()))
             }
             _ => EventResult::Ignored,
@@ -73,25 +74,62 @@ impl View for ToolbarButton {
 
 pub fn toolbar_mockup(siv: &mut Cursive, style: ColorStyle) -> impl View {
     let mut toolbar = LinearLayout::new(Orientation::Horizontal);
-    toolbar.add_child(ToolbarButton::new_with_style(siv, &style, "RET", "Inspect", Key::Enter, |_| {}));
-    toolbar.add_child(ToolbarButton::new_with_style(siv, &style, "SPC", "Send", ' ', |_| {}));
-    toolbar.add_child(ToolbarButton::new_with_style(siv, &style, "/", "Filter", '/', |_| {}));
-    toolbar.add_child(ToolbarButton::new_with_style(siv, &style, "M", "Mode", 'm', |_| {}));
-    toolbar.add_child(ToolbarButton::new_with_style(siv, &style, "Q", "Quit", 'q', Cursive::quit));
+    toolbar.add_child(ToolbarButton::new_with_style(
+        siv,
+        &style,
+        "RET",
+        "Inspect",
+        Key::Enter,
+        |_| {},
+    ));
+    toolbar.add_child(ToolbarButton::new_with_style(
+        siv,
+        &style,
+        "SPC",
+        "Send",
+        ' ',
+        |_| {},
+    ));
+    toolbar.add_child(ToolbarButton::new_with_style(
+        siv,
+        &style,
+        "/",
+        "Filter",
+        '/',
+        |_| {},
+    ));
+    toolbar.add_child(ToolbarButton::new_with_style(
+        siv,
+        &style,
+        "M",
+        "Mode",
+        'm',
+        |_| {},
+    ));
+    toolbar.add_child(ToolbarButton::new_with_style(
+        siv,
+        &style,
+        "Q",
+        "Quit",
+        'q',
+        Cursive::quit,
+    ));
     toolbar.add_child(
-        Canvas::wrap(
-            BoxView::with_full_width(
-                TextView::new(StyledString::styled(format!("kfz v{}", env!("CARGO_PKG_VERSION")), style))
-                    .h_align(HAlign::Right)
-            )
-        ).with_draw(move |child, printer| {
+        Canvas::wrap(BoxView::with_full_width(
+            TextView::new(StyledString::styled(
+                format!("kfz v{}", env!("CARGO_PKG_VERSION")),
+                style,
+            ))
+            .h_align(HAlign::Right),
+        ))
+        .with_draw(move |child, printer| {
             printer.with_style(style, |printer| {
                 for y in 0..printer.size.y {
                     printer.print_hline((0, y), printer.size.x, " ");
                 }
             });
             child.draw(printer);
-        })
+        }),
     );
 
     toolbar

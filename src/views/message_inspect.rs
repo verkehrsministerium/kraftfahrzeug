@@ -1,15 +1,15 @@
 use std::rc::Rc;
 
 use cursive::direction::Orientation;
-use cursive::views::{TextView, LinearLayout};
-use cursive::theme::{Color, BaseColor, Effect, PaletteColor};
+use cursive::theme::{BaseColor, Color, Effect, PaletteColor};
 use cursive::view::{View, ViewWrapper};
+use cursive::views::{LinearLayout, TextView};
 use cursive::Vec2;
 
 use serde_json;
 
-use crate::message::{Theme, Value};
 use crate::message::view::MessageView;
+use crate::message::{Theme, Value};
 
 lazy_static::lazy_static! {
     static ref MESSAGE_THEME: Theme = Theme {
@@ -65,7 +65,10 @@ pub fn message_inspect_mockup() -> impl View {
     }
 ";
 
-    let val = Value::new(&MESSAGE_THEME, serde_json::from_str::<serde_json::Value>(data).unwrap());
+    let val = Value::new(
+        &MESSAGE_THEME,
+        serde_json::from_str::<serde_json::Value>(data).unwrap(),
+    );
 
     let mut layout = LinearLayout::new(Orientation::Vertical);
     layout.add_child(MessageSingleLineView::new(val.clone()));
@@ -94,9 +97,6 @@ impl ViewWrapper for MessageSingleLineView {
     fn wrap_required_size(&mut self, req: Vec2) -> Vec2 {
         self.view.set_content(self.message.abbreviate(req.x));
 
-        Vec2 {
-            x: req.x,
-            y: 1,
-        }
+        Vec2 { x: req.x, y: 1 }
     }
 }

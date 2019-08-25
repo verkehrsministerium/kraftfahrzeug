@@ -9,8 +9,11 @@ impl<'a> Value<'a> {
 
     fn abbreviate_inner(&self, available: usize) -> (bool, StyledString) {
         match &self.kind {
-            ValueKind::Null | ValueKind::Bool(_) | ValueKind::Number(_) |
-            ValueKind::String(_) | ValueKind::Binary(_) => {
+            ValueKind::Null
+            | ValueKind::Bool(_)
+            | ValueKind::Number(_)
+            | ValueKind::String(_)
+            | ValueKind::Binary(_) => {
                 let mut styled = self.prefix.clone();
                 styled.append(self.content.clone());
                 styled.append(self.postfix.clone());
@@ -20,7 +23,7 @@ impl<'a> Value<'a> {
                 } else {
                     (false, styled)
                 }
-            },
+            }
             recursive => {
                 let iter: Box<dyn std::iter::Iterator<Item = &Value>> = match recursive {
                     ValueKind::Array(a) => Box::new(a.iter()),
@@ -37,9 +40,8 @@ impl<'a> Value<'a> {
                 } else {
                     for value in iter {
                         // extra +1 because of the whitespace after this value
-                        let (abbr, fmt) = value.abbreviate_inner(
-                            available.checked_sub(width + 1).unwrap_or(0),
-                        );
+                        let (abbr, fmt) =
+                            value.abbreviate_inner(available.checked_sub(width + 1).unwrap_or(0));
                         styled.append(fmt);
                         styled.append_plain(" ");
 

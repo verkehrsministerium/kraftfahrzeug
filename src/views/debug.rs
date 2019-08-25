@@ -1,6 +1,9 @@
-use cursive::{view::View, Vec2, Printer, theme::{Color, BaseColor}, utils::markup::StyledString};
-use flexi_logger::{DeferredNow, Record, Level, writers::LogWriter};
 use arraydeque::{ArrayDeque, Wrapping};
+use cursive::theme::{BaseColor, Color};
+use cursive::utils::markup::StyledString;
+use cursive::view::View;
+use cursive::{Printer, Vec2};
+use flexi_logger::{writers::LogWriter, DeferredNow, Level, Record};
 use std::cell::RefCell;
 use std::thread;
 
@@ -39,7 +42,9 @@ impl View for DebugView {
     fn required_size(&mut self, constraint: Vec2) -> Vec2 {
         logs_with(|logs| {
             // The longest line sets the width
-            let w = logs.borrow().iter()
+            let w = logs
+                .borrow()
+                .iter()
                 .map(|msg| msg.width())
                 .max()
                 .unwrap_or(1);

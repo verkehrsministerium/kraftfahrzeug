@@ -1,13 +1,13 @@
-use std::fmt;
-use std::rc::Rc;
-use std::cell::Cell;
-use std::collections::hash_map::HashMap;
 use cursive::theme::Style;
 use cursive::utils::markup::StyledString;
+use std::cell::Cell;
+use std::collections::hash_map::HashMap;
+use std::fmt;
+use std::rc::Rc;
 
+pub mod abbreviate;
 pub mod from_json;
 pub mod view;
-pub mod abbreviate;
 
 pub enum Number {
     Int(i64),
@@ -119,17 +119,13 @@ impl<'a> Value<'a> {
                             StyledString::styled(",", theme.separator),
                         );
                     } else {
-                        value.style(
-                            theme,
-                            StyledString::default(),
-                            StyledString::default(),
-                        );
+                        value.style(theme, StyledString::default(), StyledString::default());
                     }
                 }
 
                 self.postfix = StyledString::styled("]", theme.brace);
                 self.postfix.append(postfix);
-            },
+            }
             ValueKind::Binary(b) => {
                 self.expansion_state.set(ExpansionState::Collapsed);
                 self.prefix = prefix;
@@ -146,7 +142,7 @@ impl<'a> Value<'a> {
 
                 self.postfix = StyledString::styled(">", theme.brace);
                 self.postfix.append(postfix);
-            },
+            }
             ValueKind::Object(ref mut map) => {
                 self.expansion_state.set(ExpansionState::Expanded);
                 self.prefix = prefix;
@@ -158,23 +154,15 @@ impl<'a> Value<'a> {
                     prefix.append_styled(": ", theme.separator);
 
                     if idx < len - 1 {
-                        value.style(
-                            theme,
-                            prefix,
-                            StyledString::styled(",", theme.separator),
-                        );
+                        value.style(theme, prefix, StyledString::styled(",", theme.separator));
                     } else {
-                        value.style(
-                            theme,
-                            prefix,
-                            StyledString::default(),
-                        );
+                        value.style(theme, prefix, StyledString::default());
                     }
                 }
 
                 self.postfix = StyledString::styled("}", theme.brace);
                 self.postfix.append(postfix);
-            },
+            }
             recursive => {
                 self.expansion_state.set(ExpansionState::Solid);
                 self.prefix = prefix;
@@ -182,7 +170,9 @@ impl<'a> Value<'a> {
                     ValueKind::Null => StyledString::styled("null", theme.null),
                     ValueKind::Bool(b) => StyledString::styled(format!("{}", b), theme.bool),
                     ValueKind::Number(n) => StyledString::styled(format!("{}", n), theme.number),
-                    ValueKind::String(s) => StyledString::styled(format!("\"{}\"", s), theme.string),
+                    ValueKind::String(s) => {
+                        StyledString::styled(format!("\"{}\"", s), theme.string)
+                    }
                     _ => unreachable!(),
                 };
                 self.postfix = postfix;
