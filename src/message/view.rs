@@ -105,7 +105,7 @@ impl MessageView {
                     postfix.append_styled(" ", message.theme.tree_control);
                     postfix.append_plain(" ");
                     postfix.append(message.postfix.clone());
-                    result.push((postfix, message.expansion_state.clone()));
+                    result.push((postfix, Rc::new(Cell::new(ExpansionState::Solid))));
                 } else {
                     let mut abbr = indent.clone();
                     abbr.append_styled("+", message.theme.tree_control);
