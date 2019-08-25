@@ -9,7 +9,7 @@ edition = "2018"
 [dependencies]
 arraydeque = "0.4.5"
 cursive = "0"
-cursive-multiplex = "0.2.1"
+cursive-multiplex = "0.2.2"
 flexi_logger = { version = "0.14.1", features = ["specfile"] }
 log = "0"
 serde_json = "1"

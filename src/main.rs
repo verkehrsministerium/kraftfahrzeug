@@ -30,12 +30,14 @@ fn main() {
     let theme = custom_theme_from_cursive(&siv);
     siv.set_theme(theme);
 
-    let (mut mux, messages_id) = Mux::new(views::messages_mockup());
-    mux.set_move_focus_up(Event::Alt(Key::Up));
-    mux.set_move_focus_right(Event::Alt(Key::Right));
-    mux.set_move_focus_down(Event::Alt(Key::Down));
-    mux.set_move_focus_left(Event::Alt(Key::Left));
+    let mut mux = Mux::new()
+        .with_move_focus_up(Event::Alt(Key::Up))
+        .with_move_focus_right(Event::Alt(Key::Right))
+        .with_move_focus_down(Event::Alt(Key::Down))
+        .with_move_focus_left(Event::Alt(Key::Left));
 
+    let messages_id = mux.add_right_of(views::messages_mockup(), mux.root().build().unwrap())
+        .expect("failed to add messages");
     let _message_inspect_id = mux.add_right_of(views::message_inspect_mockup(), messages_id)
         .expect("failed to add message-inspect");
     let _debug_id = mux.add_below(
