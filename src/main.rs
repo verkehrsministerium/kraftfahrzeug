@@ -1,7 +1,6 @@
 use cursive::direction::Orientation;
 use cursive::event::{Event, Key};
-use cursive::theme::{BaseColor, Color, ColorStyle, ColorType};
-use cursive::views::{LinearLayout, ScrollView};
+use cursive::views::{LinearLayout, ScrollView, StackView};
 use cursive::Cursive;
 use cursive_multiplex::Mux;
 
@@ -9,7 +8,7 @@ mod message;
 mod utils;
 mod views;
 
-use crate::utils::custom_theme_from_cursive;
+use crate::utils::kfz_theme;
 use crate::views::DebugView;
 
 fn main() {
@@ -30,7 +29,7 @@ fn main() {
 
     let mut siv = Cursive::default();
 
-    let theme = custom_theme_from_cursive(&siv);
+    let theme = kfz_theme();
     siv.set_theme(theme);
 
     let mut mux = Mux::new()
@@ -55,14 +54,14 @@ fn main() {
         )
         .expect("failed to add debug-view");
 
-    let style = ColorStyle {
-        front: ColorType::Color(Color::Light(BaseColor::White)),
-        back: ColorType::Color(Color::Dark(BaseColor::Blue)),
-    };
+    let mut stack = StackView::new();
+    stack.add_fullscreen_layer(mux);
+    stack.add_fullscreen_layer(views::connect_mockup());
+
     let mut layout = LinearLayout::new(Orientation::Vertical);
-    layout.add_child(views::titlebar_mockup(style.clone()));
-    layout.add_child(mux);
-    layout.add_child(views::toolbar_mockup(&mut siv, style.clone()));
+    layout.add_child(views::titlebar_mockup(&mut siv));
+    layout.add_child(stack);
+    layout.add_child(views::toolbar_mockup(&mut siv));
 
     siv.add_fullscreen_layer(layout);
     siv.run();

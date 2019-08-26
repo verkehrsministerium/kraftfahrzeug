@@ -1,10 +1,13 @@
 use cursive::align::HAlign;
-use cursive::theme::ColorStyle;
 use cursive::traits::View;
 use cursive::utils::markup::StyledString;
 use cursive::views::{BoxView, Canvas, TextView};
+use cursive::Cursive;
 
-pub fn titlebar_mockup(style: ColorStyle) -> impl View {
+use crate::utils;
+
+pub fn titlebar_mockup(siv: &mut Cursive) -> impl View {
+    let style = utils::kfz_primary(siv);
     Canvas::wrap(BoxView::with_full_width(
         TextView::new(StyledString::styled("wss://buchholz.local/", style)).h_align(HAlign::Center),
     ))

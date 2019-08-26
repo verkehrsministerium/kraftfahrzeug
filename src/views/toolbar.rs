@@ -7,6 +7,8 @@ use cursive::utils::markup::StyledString;
 use cursive::views::{BoxView, Canvas, LinearLayout, TextView};
 use cursive::{Cursive, Printer, Vec2};
 
+use crate::utils;
+
 pub struct ToolbarButton {
     content: StyledString,
     callback: Callback,
@@ -72,7 +74,9 @@ impl View for ToolbarButton {
     }
 }
 
-pub fn toolbar_mockup(siv: &mut Cursive, style: ColorStyle) -> impl View {
+pub fn toolbar_mockup(siv: &mut Cursive) -> impl View {
+    let style = utils::kfz_primary(siv);
+
     let mut toolbar = LinearLayout::new(Orientation::Horizontal);
     toolbar.add_child(ToolbarButton::new_with_style(
         siv,
