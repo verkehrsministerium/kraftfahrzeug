@@ -1,6 +1,7 @@
 use cursive::direction::Orientation;
 use cursive::event::{Event, Key};
-use cursive::views::{LinearLayout, ScrollView, StackView};
+use cursive::views::{LinearLayout, ScrollView, StackView, LayerPosition};
+use cursive::view::Identifiable;
 use cursive::Cursive;
 use cursive_multiplex::Mux;
 
@@ -54,9 +55,16 @@ fn main() {
         )
         .expect("failed to add debug-view");
 
-    let mut stack = StackView::new();
-    stack.add_fullscreen_layer(mux);
-    stack.add_fullscreen_layer(views::connect_mockup());
+    let stack = StackView::new()
+        .fullscreen_layer(mux)
+        .fullscreen_layer(views::connect_mockup(|siv, url| {
+            log::info!("Connecting to {}", url);
+
+            siv.call_on_id("stack", |stack: &mut StackView| {
+                stack.move_to_front(LayerPosition::FromFront(1));
+            });
+        }))
+        .with_id("stack");
 
     let mut layout = LinearLayout::new(Orientation::Vertical);
     layout.add_child(views::titlebar_mockup(&mut siv));

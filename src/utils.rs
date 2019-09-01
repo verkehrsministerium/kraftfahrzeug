@@ -1,8 +1,10 @@
-use cursive::theme::{BaseColor, Color, ColorStyle, ColorType, Palette, PaletteColor, BorderStyle, Theme};
+use cursive::theme::{
+    BaseColor, BorderStyle, Color, ColorStyle, ColorType, Palette, PaletteColor, Theme,
+};
 use cursive::utils::markup::StyledString;
+use cursive::view::{View, ViewWrapper};
 use cursive::views::SelectView;
 use cursive::{Cursive, Printer};
-use cursive::view::{View, ViewWrapper};
 
 /// Repeat the string `s` `n` times by concatenating.
 pub fn repeat_str<S: Into<String> + Clone>(s: S, n: usize) -> String {
@@ -18,10 +20,7 @@ pub fn kfz_primary(siv: &mut Cursive) -> ColorStyle {
 }
 
 pub fn secondary() -> ColorStyle {
-    ColorStyle::new(
-        PaletteColor::Secondary,
-        Color::Dark(BaseColor::Black),
-    )
+    ColorStyle::new(PaletteColor::Secondary, Color::Dark(BaseColor::Black))
 }
 
 // Get a theme instance which respects the terminals foreground and background colors.
@@ -49,9 +48,7 @@ pub fn kfz_theme() -> Theme {
 
 pub trait PrimaryView: Sized {
     fn with_primary_view(self) -> PrimaryViewWrapper<Self> {
-        PrimaryViewWrapper {
-            view: self,
-        }
+        PrimaryViewWrapper { view: self }
     }
 }
 
