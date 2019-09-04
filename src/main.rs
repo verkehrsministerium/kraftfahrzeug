@@ -1,5 +1,4 @@
 use cursive::direction::Orientation;
-use cursive::event::{Event, Key};
 use cursive::views::{LinearLayout, ScrollView, StackView, LayerPosition};
 use cursive::view::Identifiable;
 use cursive::Cursive;
@@ -33,11 +32,7 @@ fn main() {
     let theme = kfz_theme();
     siv.set_theme(theme);
 
-    let mut mux = Mux::new()
-        .with_move_focus_up(Event::Alt(Key::Up))
-        .with_move_focus_right(Event::Alt(Key::Right))
-        .with_move_focus_down(Event::Alt(Key::Down))
-        .with_move_focus_left(Event::Alt(Key::Left));
+    let mut mux = Mux::new();
 
     let messages_id = mux
         .add_right_of(views::messages_mockup(), mux.root().build().unwrap())
