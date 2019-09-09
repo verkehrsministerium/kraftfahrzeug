@@ -1,6 +1,7 @@
 use cursive::view::{Boxable, Identifiable, View};
-use cursive::views::{Button, DummyView, EditView, LinearLayout, PaddedView, Panel, StackView};
+use cursive::views::{Button, DummyView, EditView, LinearLayout, PaddedView, Panel};
 use cursive::Cursive;
+use cursive_aligned_view::Alignable;
 
 use crate::utils::{self, PrimaryView};
 
@@ -27,17 +28,16 @@ where
     })
     .with_primary_view();
 
-    StackView::new()
-        .layer(
-            Panel::new(PaddedView::new(
-                (1, 1, 0, 0),
-                LinearLayout::vertical()
-                    .child(edit)
-                    .child(DummyView)
-                    .child(connect_btn),
-            ))
-            .title("Websocket Address")
-            .max_width(80),
-        )
-        .full_screen()
+    let content = PaddedView::new(
+        (1, 1, 0, 0),
+        LinearLayout::vertical()
+            .child(edit)
+            .child(DummyView)
+            .child(connect_btn),
+    );
+
+    Panel::new(content)
+        .title("Websocket Address")
+        .max_width(80)
+        .align_center()
 }

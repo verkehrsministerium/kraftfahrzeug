@@ -21,7 +21,7 @@
     <img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" target="_blank" />
   </a>
   <br>
-  <i>A serialization agnostic repl for websocket transports</i>
+  <i>A serialization agnostic debugger and inspector for websocket transports</i>
 </p>
 
 ---
