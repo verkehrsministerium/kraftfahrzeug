@@ -1,7 +1,8 @@
 use cursive::view::{Boxable, Identifiable, View};
-use cursive::views::{Button, DummyView, EditView, LinearLayout, PaddedView, Panel};
+use cursive::views::{Button, DummyView, EditView, LinearLayout, PaddedView};
 use cursive::Cursive;
 use cursive_aligned_view::Alignable;
+use cursive_tabs::TabPanel;
 
 use crate::utils::{self, PrimaryView};
 
@@ -36,8 +37,11 @@ where
             .child(connect_btn),
     );
 
-    Panel::new(content)
-        .title("Websocket Address")
+    TabPanel::new()
+        .with_tab("Websocket Address", content)
+        .with_tab("History", DummyView)
+        .with_active_tab("Websocket Address")
+        .unwrap()
         .max_width(80)
         .align_center()
 }
